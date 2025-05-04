@@ -22,7 +22,7 @@ from firefly.likelihood.firefly_likelihood import (
     Auxiliary_likelihood,
 )
 from firefly.utils.resampling import firefly_resampling
-from firefly.utils.basic import firefly_corner_plot
+from firefly.utils.tools import firefly_corner_plot
 
 
 def main(config):

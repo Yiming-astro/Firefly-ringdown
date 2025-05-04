@@ -287,3 +287,25 @@ class Auxiliary_likelihood(Likelihood):
 
     def log_likelihood(self):
         return self.log_likelihood_ratio() + self.noise_log_likelihood()
+
+    def _MLE_cov_calculation(self, params):
+        try:
+            self.parameters = params
+            Omegas = self.waveform_generator.time_domain_strain(self.parameters)[
+                "Omegas"
+            ]
+        except RuntimeError:
+            return np.nan_to_num(-np.inf)
+
+        if Omegas is None:
+            raise ValueError(
+                f"Resampling error: something wrong for params {params} in Fisher_matrix_calculation."
+            )
+
+        S_all, M_all = self.F_matrix(Omegas)
+        M_all_mp = mp.matrix(M_all)
+        M_all_inv_mp = mp.inverse(M_all_mp)
+        M_all_inv = np.array(M_all_inv_mp.tolist(), dtype=np.float64)
+        B_mean = M_all_inv @ S_all
+        B_cov = M_all_inv
+        return (B_mean, B_cov)

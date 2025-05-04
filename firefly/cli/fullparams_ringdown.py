@@ -20,7 +20,7 @@ from firefly.likelihood.fullparams_likelihood import (
     Full_params_likelihood,
 )
 from firefly.utils.ringdown_signal import Pycbc_ringdown_lmn
-from firefly.utils.basic import bilby_corner_plot
+from firefly.utils.tools import bilby_corner_plot
 
 
 def main(config):
@@ -40,10 +40,9 @@ def main(config):
     ]
     cov_matrix = {}
     for ifo in ifos:
-        # TODO (yiming) : here we add 0.01s for corner case, rethink it.
         strain_rd = strain[ifo.name].time_slice(
             rd_analysis_time[ifo.name]["rd_analysis_start_time"],
-            rd_analysis_time[ifo.name]["rd_analysis_end_time"] + 0.01,
+            rd_analysis_time[ifo.name]["rd_analysis_end_time"],
         )[:length_cov]
         ifo_data = gtts(
             strain_rd.numpy(),
