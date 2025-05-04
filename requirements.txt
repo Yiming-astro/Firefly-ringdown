@@ -1,0 +1,8 @@
+bilby==2.5.0
+pycbc==2.8.2
+# pycbc should > 2.5.1 or there exists `set_method` conflict in `multiprocessing`
+mpmath
+lalsuite
+qnm==0.4.4
+# qnm should > 0.4.3 or there exists `np.Inf` conflict for `numpy` > 2.0
+gwpy

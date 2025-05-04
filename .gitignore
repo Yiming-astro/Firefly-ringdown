@@ -1,7 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+/results/
 *.py[cod]
 *$py.class
+.pre-commit-config.yaml
 
 # C extensions
 *.so

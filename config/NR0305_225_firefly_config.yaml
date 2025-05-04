@@ -1,0 +1,118 @@
+# NR_0305_config
+
+sampling_type : 'firefly'
+# should choose 'firefly' or 'fullparams'
+# ---------------------------------------------------------------------------------
+# basic & file_path
+
+# set the sampling frenquency 
+# it should be consistent with the strain data and the acfs
+sampling_frequency : 2048
+# strain start of strain in geocent_time (unit: second)
+start_time : 6665.5
+# coalescence time in geocent_time (unit: second)
+coalescence_time : 6666
+# The duration of the signal we extracted in ringdown signal analysis (unit: second)
+duration_time : 0.1
+
+det_name :
+  - 'H1'
+strain_path : 
+  H1 : './data/strains/ET-D_NR0305_strain_2048Hz.txt'
+acf_path : 
+  H1 : './data/acfs/ET-D_acfs_2048Hz.txt'
+save_path : './results/NR0305_firefly/NR0305_225_8'
+# label for logging
+label : 'NR0305'
+
+# ---------------------------------------------------------------------------------
+# source_term
+
+# Source paramters determined by IMR
+inclination : 2.356194490192345
+phase : 0.0
+# Estimated final mass (unit: solar mass)
+# They will only be incorporated into the analysis as the unit of 'delta_t'.
+# An estimated value is also acceptable.
+final_mass : 68.20981073643027
+
+# ---------------------------------------------------------------------------------
+# sampling config
+
+# QNM setting
+# start time of ringdown analysis after coalescence (unit : final_mass)
+delta_t : 8
+# Fitting mode
+# When an 'lmn' is provided, all modes with an overtone index smaller than n are included
+# '221' means that only the fundamental mode (l, m, n) = (2, 2, 0) is involved
+# '223' includes the modes (2, 2, 0), (2, 2, 1), and (2, 2, 2).
+lmns:
+  - '225'
+
+# prior setting
+prior_setting :
+  # Prior of final_mass is set to be flat, you can change the prior range (unit : solar mass)
+  final_mass :
+    min : 50
+    max : 100
+  final_spin : 
+    min : 0.
+    max : 0.99
+  amplitude :
+    # Choose : 'flat' or 'quadrature_flat'
+    # 'flat' means that the prior of A_lmn is flat
+    # 'quadrature_flat' means that the prior of B (arXiv. 2502.01093) is flat
+    # which corresponding to a triangle-prior for A_lmn favouring larger amplitude
+    type : 'flat'
+    # setting a normalization factor for A_lmn in calculation
+    max : 5
+    # or you can set the max for every lmn spearately in dict
+    # it should be consist with the setting lmns
+    # max :
+    #   220 : 5
+
+# sampler setting
+# choose the sampling algorithm ('nested_sampling' or 'mcmc')
+# If you choose either 'nested_sampling' or 'mcmc', the settings for the other will be ignored.
+sampling_algorithm : nested_sampling
+
+nested_sampling : 
+  sampler : 'dynesty'
+  nlive : 2000
+  queue_size : 16
+  dlogz : 0.1
+  resume : True
+
+mcmc : 
+  sampler : 'bilby_emcee'
+  nsamples : 2000
+  thin_by_nact : 1
+  ntemps : 16
+  npool : 16
+  L1steps : 100
+  printdt : 60
+  check_point_delta_t : 900
+
+resampling_setting : 
+  n_MC : 10
+  n_w : 50000
+  n_target : 20000
+  n_QNM : 5000
+  n_queue : 16
+
+save_setting :
+  save_posterior_in_quadrature_flat_prior : True
+  
+# ---------------------------------------------------------------------------------
+# blog config
+# The useless config to sampling but deserve recording by blog
+
+blog_config :
+  f_filter : 20.0
+  luminosity_distance : 390.0
+  total_mass : 71.64648185139227
+  mass_ratio : 1.221202603452016
+  mass1 : 39.39076517789071
+  mass2 : 32.25571667350156
+  snrs :
+    H1 : 311.5006869714857
