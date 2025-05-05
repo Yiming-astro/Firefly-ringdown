@@ -6,9 +6,13 @@ import numpy as np
 from pycbc.types import TimeSeries
 
 
-def load_pycbc_timeseries(txt_path, sampling_frequency, epoch=0):
-    txt_array = np.loadtxt(txt_path)
-    return TimeSeries(txt_array, delta_t=1 / sampling_frequency, epoch=epoch)
+def load_pycbc_timeseries(txt_path):
+    data = np.loadtxt(txt_path)
+    times, strain = data[:, 0], data[:, 1]
+    delta_t = times[1] - times[0]
+    start_time = times[0]
+    strain_series = TimeSeries(strain, delta_t=delta_t, epoch=start_time)
+    return strain_series
 
 
 def load_config(config_path, type):
@@ -37,7 +41,6 @@ def load_config(config_path, type):
     for det in detectors:
         acf = load_pycbc_timeseries(
             txt_path=config["acf_path"][det],
-            sampling_frequency=config["sampling_frequency"],
         )
         if acf.sample_times[-1] < config["duration_time"]:
             raise ValueError(
@@ -58,8 +61,6 @@ def load_config(config_path, type):
     for det in detectors:
         strain = load_pycbc_timeseries(
             txt_path=config["strain_path"][det],
-            sampling_frequency=config["sampling_frequency"],
-            epoch=config["start_time"],
         )
         if (strain.sample_times[0] - rd_analysis_start_time) > (
             1 / config["sampling_frequency"]
