@@ -1,0 +1,10 @@
+# posterior_comparison setting
+
+firefly_posterior_path : './results/NR0305_firefly/NR0305_221_28/NR0305_amplitude_flat_prior.csv'
+fullparams_posterior_path : './results/NR0305_fullparams/NR0305_221_28/NR0305_result.json'
+save_path : './results/Posterior_comparison'
+
+lmns :
+  - '221'
+
+ranges: None

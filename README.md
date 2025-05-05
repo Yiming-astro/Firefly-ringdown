@@ -30,6 +30,11 @@ For comparison with full-parameters estimation, run the following command in the
 python -m firefly.cli.fullparams_ringdown --config_path config/NR0305_221_fullparams_config.yaml
 ```
 
+We offer a script to compare posteriors of Firefly and full-parameter sampling, 
+```sh
+python -m firefly.cli.posterior_comparison --config_path config/posterior_comparison.yaml
+```
+
 ### 💡 Algorithm
 
 Based on the likelihood-driven importance-sampling scheme design, we extended the marginalization acceleration approach of the $\mathcal{F}$-statistic to arbitrary prior scenarios, significantly accelerating the computational efficiency of traditional full-parameter Bayesian inference.
