@@ -157,9 +157,24 @@ def main(config):
             dlogz=config["nested_sampling"]["dlogz"],
             resume=config["nested_sampling"]["resume"],
         )
+    elif config["sampling_algorithm"] in ["mcmc"]:
+        result = bilby.run_sampler(
+            likelihood=likelihood,
+            priors=priors,
+            sampler=config["mcmc"]["sampler"],
+            nsamples=config["mcmc"]["nsamples"],
+            thin_by_nact=config["mcmc"]["thin_by_nact"],
+            ntemps=config["mcmc"]["ntemps"],
+            npool=config["mcmc"]["npool"],
+            L1steps=config["mcmc"]["L1steps"],
+            proposal_cycle="default",
+            printdt=config["mcmc"]["printdt"],
+            outdir=config["save_path"],
+            label=config["label"],
+            check_point_delta_t=config["mcmc"]["check_point_delta_t"],
+        )
     else:
-        # TODO (yiming) : implement mcmc
-        raise ValueError("mcmc not implement.")
+        raise ValueError("Sampling_algorithm not implement.")
 
     # plot the posteriors
     result.plot_corner(

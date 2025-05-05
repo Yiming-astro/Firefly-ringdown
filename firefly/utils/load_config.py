@@ -113,9 +113,9 @@ def load_config(config_path, type):
                 f"Configuration error: currently, only 'dynesty' is supported for nested_sampling sampler."
             )
     else:
-        if config["mcmc"]["sampler"] not in ["bilby_emcee"]:
+        if config["mcmc"]["sampler"] not in ["bilby_mcmc"]:
             raise ValueError(
-                f"Configuration error: currently, only 'bilby_emcee' is supported for mcmc sampler."
+                f"Configuration error: currently, only 'bilby_mcmc' is supported for mcmc sampler."
             )
 
     print("Configuration passed consistency test.")

@@ -132,8 +132,7 @@ def main(config):
             resume=config["nested_sampling"]["resume"],
         )
     else:
-        # TODO (yiming) : implement mcmc
-        raise ValueError("mcmc not implement.")
+        raise ValueError("mcmc not implement for firefly algorithm.")
 
     # plot the posteriors
     result.plot_corner(

@@ -80,8 +80,8 @@ nested_sampling :
   resume : True
 
 mcmc : 
-  sampler : 'bilby_emcee'
-  nsamples : 2000
+  sampler : 'bilby_mcmc'
+  nsamples : 100
   thin_by_nact : 1
   ntemps : 16
   npool : 16

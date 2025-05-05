@@ -86,16 +86,6 @@ nested_sampling :
   dlogz : 0.1
   resume : True
 
-mcmc : 
-  sampler : 'bilby_emcee'
-  nsamples : 2000
-  thin_by_nact : 1
-  ntemps : 16
-  npool : 16
-  L1steps : 100
-  printdt : 60
-  check_point_delta_t : 900
-
 resampling_setting : 
   n_MC : 10
   n_w : 50000
