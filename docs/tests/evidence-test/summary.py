@@ -188,6 +188,14 @@ def main(lmns):
         r"$9$",
         r"$10$",
     ]
+
+    if lmns in ["221"]:
+        label = r"$N=1$"
+    if lmns in ["222"]:
+        label = r"$N=2$"
+    if lmns in ["223"]:
+        label = r"$N=3$"
+
     x = np.arange(len(x_labels))
     plot_evidence_test(
         ax,
@@ -196,7 +204,7 @@ def main(lmns):
         evidence_error_list,
         evidence_mean,
         analytical_evidence,
-        r"$N=1$",
+        label,
     )
 
     if lmns in ["221"]:

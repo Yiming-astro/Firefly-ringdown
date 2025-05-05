@@ -4,10 +4,10 @@ CONDA_BASE=$(conda info --base)
 source "${CONDA_BASE}/etc/profile.d/conda.sh"
 conda activate firefly
 
-export PYTHONPATH="${PYTHONPATH}:$PWD"
+export PYTHONPATH="${PYTHONPATH:-}:$PWD"
 
 # setting
-lmns=221
+lmns=${1:-221}
 fisher_script="docs/tests/evidence-test/fisher_matrix_calculations.py"
 config="config/ZeroNoise_${lmns}_firefly_config.yaml"
 
