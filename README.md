@@ -63,8 +63,10 @@ If you have used or referred to the code from `Firefly-ringdown`, please cite [Y
 
 We gratefully acknowledge the developers of the following gravitational-wave analysis libraries, which have been instrumental to this project, [bilby](https://github.com/bilby-dev/bilby), [pycbc](https://github.com/gwastro/pycbc), [lalsuite](https://lscsoft.docs.ligo.org/lalsuite/lalsuite/), [qnm](https://github.com/duetosymmetry/qnm), [gwpy](https://gitlab.com/gwpy/gwpy) and [pykerr](https://github.com/cdcapano/pykerr).
 
-We gratefully acknowledge the following papers, upon whose theoretical foundations the Firefly methodology is built.
+We gratefully acknowledge the following papers, upon whose theoretical foundations the Firefly methodology is built. 
 
+- [R. Prix (2016)](https://dcc.ligo.org/LIGO-T1500618/public)
 - [M. Isi & W. M. Farr (2021)](https://arxiv.org/abs/2107.05609)
 - [H.-T. Wang et al. (2024)](https://arxiv.org/abs/2409.00970)
 
+[R. Prix (2016)](https://dcc.ligo.org/LIGO-T1500618/public) pioneered leveraging the Gaussian nature of the likelihood to accelerate ringdown signal analysis. [M. Isi & W. M. Farr (2021)](https://arxiv.org/abs/2107.05609) laid the theoretical groundwork for the full-parameter sampling employed in this project, and introduced a sampler-friendly parameterization that further exploits Gaussian characteristics. The code of $\mathcal{F}$-statistic-based auxillary inference is adpated from the project of [H.-T. Wang et al. (2024)](https://arxiv.org/abs/2409.00970).
