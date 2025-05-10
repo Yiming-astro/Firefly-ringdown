@@ -148,13 +148,14 @@ def load_config_signal_injections(config_path):
     ]
     config["lmn_all"] = lmn_all
 
-    # noise setting check
+    # detectors check
+    detectors = config.get("det_name", [])
     if config["add_noise"]:
-        psd_path = config.get("noise_psd_path", "")
-        if not os.path.exists(psd_path):
-            raise ValueError(
-                f"Configuration error: Noise addition has been specified, but the noise PSD path {psd_path} is invalid."
-            )
+        for det in detectors:
+            if det not in config.get("psd_path", {}):
+                raise ValueError(
+                    f"Configuration error: no psd_path specified for detector '{det}'."
+                )
 
     # check injection parameters
     for lmn in lmn_all:

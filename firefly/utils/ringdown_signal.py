@@ -260,7 +260,7 @@ def QNM_injection(config, **params_kwargs):
 
     lmn_all = config["lmn_all"]
     sampling_frequency = config["sampling_frequency"]
-    duration = config["duration"]
+    duration = config["slice_duration"]
     delta_t = 1.0 / sampling_frequency
     t_list = np.arange(0.0, duration, delta_t)
 

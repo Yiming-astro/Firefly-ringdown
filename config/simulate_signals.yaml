@@ -3,7 +3,7 @@
 lmns :
   - '221'
 sampling_frequency : 2048
-duration : 0.1
+slice_duration : 0.1
 
 injection_params:
   final_mass : 68.20981073643027
@@ -16,8 +16,13 @@ injection_params:
 
 # Currently, we only support sky-averaged signal injections
 add_noise : False
-noise_psd_path : 'data/psds/ET-0000A-18_ETDSensitivityCurveTxtFile.txt'
+det_name :
+  - 'H1'
+psd_path : 
+  H1 : 'data/psds/ET-0000A-18_ETDSensitivityCurveTxtFile.txt'
+
+f_filter : 20
 
 label : 'qnm_221'
-plot_strain : False
+plot_strain : True
 save_path : 'results/signal_injections'
