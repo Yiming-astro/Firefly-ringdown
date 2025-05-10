@@ -35,6 +35,11 @@ We offer a script to compare posteriors of Firefly and full-parameter sampling,
 python -m firefly.cli.posterior_comparison --config_path config/posterior_comparison.yaml
 ```
 
+and a script to simulate QNM signals,
+```sh
+python -m firefly.cli.simulate_signals --config_path config/simulate_signals.yaml
+``` 
+
 ### 💡 Algorithm
 
 Based on the likelihood-driven importance-sampling scheme design, we extended the marginalization acceleration approach of the $\mathcal{F}$-statistic to arbitrary prior scenarios, significantly accelerating the computational efficiency of traditional full-parameter Bayesian inference.
