@@ -124,3 +124,55 @@ def load_config(config_path, type):
         os.makedirs(config["save_path"])
 
     return config
+
+
+def load_config_signal_injections(config_path):
+
+    # load the config
+    with open(config_path, "r", encoding="utf-8") as file:
+        config = yaml.safe_load(file)
+
+    # lmns check
+    lmns = config.get("lmns", [])
+    for mode in lmns:
+        if not (isinstance(mode, str) and len(mode) == 3 and mode.isdigit()):
+            raise ValueError(
+                f"Configuration error: invalid lmns format '{mode}'. lmns should be written as 'lmN' (e.g., '221'), other formats are not supported currently."
+            )
+        if mode[-1] == "0":
+            raise ValueError(
+                f"Configuration error: invalid lmns format: '{mode}'. The overtone number N should not be 0; if you wish to include only the fundamental mode, please set N=1."
+            )
+    lmn_all = [
+        "%s%d" % (lmn[:2], n) for lmn in lmns for n in range(int("%s" % lmn[-1]))
+    ]
+    config["lmn_all"] = lmn_all
+
+    # noise setting check
+    if config["add_noise"]:
+        psd_path = config.get("noise_psd_path", "")
+        if not os.path.exists(psd_path):
+            raise ValueError(
+                f"Configuration error: Noise addition has been specified, but the noise PSD path {psd_path} is invalid."
+            )
+
+    # check injection parameters
+    for lmn in lmn_all:
+        amp_key = "amp" + lmn
+        phi_key = "phi" + lmn
+        if (
+            amp_key not in config["injection_params"].keys()
+            or phi_key not in config["injection_params"].keys()
+        ):
+            raise ValueError(
+                f"Configuration error: injected parameters for `{lmn}` are missing; injected_params should include `{amp_key}` and `{phi_key}`."
+            )
+
+    print("Configuration passed consistency test.")
+
+    strain_save_path = os.path.join(config["save_path"], config["label"])
+    config["strain_save_path"] = strain_save_path
+    if not os.path.exists(strain_save_path):
+        os.makedirs(strain_save_path)
+
+    return config

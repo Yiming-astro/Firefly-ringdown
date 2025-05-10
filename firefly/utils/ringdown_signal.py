@@ -239,3 +239,131 @@ def Pycbc_ringdown_lmn(**kwargs):
         hplus, hcross = waveform.ringdown.get_td_from_freqtau(**waveform_params)
 
     return {"plus": hplus, "cross": hcross}
+
+
+def QNM_injection(config, **params_kwargs):
+
+    waveform_params = dict(
+        taper=False,
+        final_mass=20.0,
+        final_spin=None,
+        lmns=["221"],
+        amp220=1.0,
+        phi220=0.0,
+        inclination=0.0,
+        delta_t=1.0 / 2048,
+        harmonics="spherical",
+        azimuthal=0.0,
+        model="qnm",
+    )
+    waveform_params.update(params_kwargs)
+
+    lmn_all = config["lmn_all"]
+    sampling_frequency = config["sampling_frequency"]
+    duration = config["duration"]
+    delta_t = 1.0 / sampling_frequency
+    t_list = np.arange(0.0, duration, delta_t)
+
+    omegas = dict()
+
+    # Calculate the intrisic frequency and damping time for each mode
+    # omegas : key (lmn) to a complex number (real part : 2 * np.pi * f_{lmn})
+    # Imaginary part : 1 / tau_{lmn}
+
+    for lmn in lmn_all:
+        if (
+            waveform_params["harmonics"] == "spherical"
+            or waveform_params["harmonics"] == "arbitrary"
+        ):
+            if waveform_params["model"] == "qnm":
+                bbh = qnm.modes_cache(-2, int(lmn[0]), int(lmn[1]), int(lmn[2]))
+                omega, _, _ = bbh(a=waveform_params["final_spin"])
+                omega0 = omega / (lal.MTSUN_SI * float(waveform_params["final_mass"]))
+                f0, tau0 = omega0.real, 1.0 / abs(omega0.imag)
+            elif waveform_params["model"] == "ftau":
+                f0, tau0 = (
+                    2 * np.pi * waveform_params["f_{}".format(str(lmn))],
+                    1.0 / waveform_params["tau_{}".format(str(lmn))],
+                )
+            else:
+                assert (
+                    waveform_params["model"] == "pykerr"
+                ), "The waveform model can only be qnm or pykerr."
+                f0 = (
+                    2
+                    * np.pi
+                    * pykerr.qnmfreq(
+                        waveform_params["final_mass"],
+                        waveform_params["final_spin"],
+                        int(lmn[0]),
+                        int(lmn[1]),
+                        int(lmn[2]),
+                    )
+                )
+                tau0 = pykerr.qnmtau(
+                    waveform_params["final_mass"],
+                    waveform_params["final_spin"],
+                    int(lmn[0]),
+                    int(lmn[1]),
+                    int(lmn[2]),
+                )
+
+            if ("delta_f{}".format(lmn) in waveform_params) and (
+                "delta_tau{}".format(lmn) in waveform_params
+            ):
+                omegas[lmn] = (
+                    f0
+                    + waveform_params["delta_f{}".format(lmn)] * f0
+                    - 1.0j / (tau0 + waveform_params["delta_tau{}".format(lmn)] * tau0)
+                )
+            elif "delta_f{}".format(lmn) in waveform_params:
+                omegas[lmn] = (
+                    f0 + waveform_params["delta_f{}".format(lmn)] * f0 - 1.0j / tau0
+                )
+            elif "delta_tau{}".format(lmn) in waveform_params:
+                omegas[lmn] = f0 - 1.0j / (
+                    tau0 + waveform_params["delta_tau{}".format(lmn)] * tau0
+                )
+            else:
+                omegas[lmn] = f0 - 1.0j / tau0
+
+    Omegas = {lmn: omegas[lmn].real for lmn in lmn_all}
+    rtaus = {lmn: abs(omegas[lmn].imag) for lmn in lmn_all}
+    fspin = (
+        waveform_params["final_spin"]
+        if "final_spin" in waveform_params.keys()
+        else None
+    )
+
+    # Calculate the polarizations of the final signals
+
+    h_plus = np.zeros_like(t_list, dtype=np.float64)
+    h_cross = np.zeros_like(t_list, dtype=np.float64)
+
+    for lmn in lmn_all:
+
+        Y_lm, Y_lnm = spher_harms(
+            harmonics=waveform_params["harmonics"],
+            l=int(lmn[0]),
+            m=int(lmn[1]),
+            n=int(lmn[2]),
+            inclination=waveform_params["inclination"],
+            azimuthal=waveform_params["azimuthal"],
+            spin=fspin,
+        )
+        amp_key = f"amp{lmn}"
+        phi_key = f"phi{lmn}"
+
+        amp_lmn = waveform_params[amp_key] * 1e-20
+        phi_lmn = waveform_params[phi_key]
+        omega = Omegas[lmn]
+        rtau = rtaus[lmn]
+
+        h_complex = (
+            amp_lmn * np.exp(1j * (omega * t_list + phi_lmn)) * np.exp(-t_list * rtau)
+        )
+
+        h_plus += h_complex.real * (Y_lm.real + (-1) ** int(lmn[0]) * Y_lnm.real)
+        h_cross += h_complex.imag * (Y_lm.real - (-1) ** int(lmn[0]) * Y_lnm.real)
+
+    return {"plus": h_plus, "cross": h_cross}

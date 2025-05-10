@@ -1,0 +1,23 @@
+# simulate_signals setting
+
+lmns :
+  - '221'
+sampling_frequency : 2048
+duration : 0.1
+
+injection_params:
+  final_mass : 68.20981073643027
+  final_spin : 0.6920851868180025
+  geocent_time : 0.0
+  azimuthal : 0.0
+  inclination : 2.356194490192345
+  amp220 : 0.1102
+  phi220 : 5.4412
+
+# Currently, we only support sky-averaged signal injections
+add_noise : False
+noise_psd_path : 'data/psds/ET-0000A-18_ETDSensitivityCurveTxtFile.txt'
+
+label : 'qnm_221'
+plot_strain : False
+save_path : 'results/signal_injections'
