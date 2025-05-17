@@ -25,21 +25,6 @@ plt.rcParams.update(
 )
 
 
-def compute_pp_curve(sample_x, sample_y):
-
-    sorted_x = np.sort(sample_x)
-    cdf_x = np.arange(1, len(sorted_x) + 1) / len(sorted_x)
-    interp_cdf_x = interpolate.interp1d(
-        sorted_x, cdf_x, kind="linear", fill_value="extrapolate"
-    )
-
-    sorted_y = np.sort(sample_y)
-    cdf_y = np.arange(1, len(sorted_y) + 1) / len(sorted_y)
-    cdf_x_at_y = interp_cdf_x(sorted_y)
-
-    return cdf_y, cdf_x_at_y
-
-
 def main(config):
 
     lmns = config["lmns"]
@@ -59,7 +44,7 @@ def main(config):
         keys.append(f"amp{lmn}")
         keys.append(f"phi{lmn}")
     labels = [r"$M_f\,[M_{\odot}]$", r"$\chi_f$"]
-    for lmn in lmns:
+    for lmn in lmn_all:
         labels.append(r"$A_{{{}}}\,[10^{{-20}}]$".format(lmn))
         labels.append(r"$\phi_{{{}}}$".format(lmn))
 
@@ -149,35 +134,6 @@ def main(config):
     corner_save_path = os.path.join(save_path, "posterior.pdf")
     plt.savefig(corner_save_path, bbox_inches="tight")
     print(f"save to {corner_save_path}.")
-
-    # Plot PP-plot between posterior distribution of Firefly and fullparams
-    cdf_fullparams = []
-    cdf_Firefly = []
-    for i in range(len(keys)):
-        cdf_fullparams_i, cdf_Firefly_i = compute_pp_curve(
-            Firefly_samples[:, i], fullparams_samples[:, i]
-        )
-        cdf_fullparams.append(cdf_fullparams_i)
-        cdf_Firefly.append(cdf_Firefly_i)
-
-    fig, ax = plt.subplots(figsize=(7, 7))
-    xlabel = "Firefly"
-    ylabel = "Full-params"
-    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
-    ax.set_xlabel(xlabel, labelpad=10, fontsize=30)
-    ax.set_ylabel(ylabel, labelpad=10, fontsize=30)
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
-    for i in range(len(labels)):
-        ax.plot(cdf_Firefly[i], cdf_fullparams[i], label=labels[i], lw=1.5)
-    ax.legend(loc="lower right", fontsize=20, frameon=False)
-    ax.tick_params(axis="both", which="major", labelsize=24)
-    ax.plot([0, 1], [0, 1], linestyle="--", color="k", lw=2)
-    plt.legend()
-
-    pp_save_path = os.path.join(save_path, "pp-plot.pdf")
-    plt.savefig(pp_save_path, bbox_inches="tight")
-    print(f"save to {pp_save_path}.")
 
     return
 

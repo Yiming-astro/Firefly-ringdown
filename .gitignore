@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 /results/
+/bash/
+/notebook/
 *.py[cod]
 *$py.class
 .pre-commit-config.yaml

@@ -103,7 +103,7 @@ def load_config(config_path, type):
         )
 
     # check sampling configuration
-    if config["sampling_algorithm"] not in ["nested_sampling", "mcmc"]:
+    if config["sampling_algorithm"] not in ["nested_sampling", "mcmc", "nessai"]:
         raise ValueError(
             f"Configuration error: unsupported sampling_algorithm '{config['sampling_algorithm']}' (should be 'nested_sampling' or 'mcmc')."
         )

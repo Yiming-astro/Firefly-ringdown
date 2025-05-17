@@ -173,6 +173,24 @@ def main(config):
             label=config["label"],
             check_point_delta_t=config["mcmc"]["check_point_delta_t"],
         )
+    elif config["sampling_algorithm"] in ["nessai"]:
+        result = bilby.run_sampler(
+            likelihood=likelihood,
+            priors=priors,
+            sampler="nessai",
+            outdir=config["save_path"],
+            npool=config["nessai"]["npool"],
+            label=config["label"],
+            dlogz=config["nessai"]["dlogz"],
+            num_live_points=config["nessai"]["nlive"],
+            printdt=30,
+            resume=True,
+            parallelise_prior=True,
+            flow_config=dict(
+                n_blocks=4, n_layers=2, n_neurons=16, linear_transform="lu"
+            ),
+            training_config=dict(lr=3e-3, batch_size=1000, max_epochs=500, patience=20),
+        )
     else:
         raise ValueError("Sampling_algorithm not implement.")
 
