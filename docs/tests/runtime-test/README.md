@@ -46,4 +46,4 @@ We provide a script with stricter hyperparameter configurations for the two-step
 python -m firefly.cli.firefly_ringdown --config_path docs/tests/runtime-test/config/NR0305_224_firefly_config_stringent_setting.yaml
 ```
 
-We can adjust the hyperparameter settings to check whether the posterior distributions remain consistent. The examples in the `config` already use sufficiently conservative settings, and applying stricter hyperparameters will not produce distinguishable changes in the posteriors.
+We can adjust the hyperparameter settings to check whether the posterior distributions remain consistent. The examples in the `Firefly-ringdown/config` already use sufficiently conservative settings, and applying stricter hyperparameters will not produce distinguishable changes in the posteriors.
